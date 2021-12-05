@@ -57,7 +57,7 @@ AC_CHECK_HEADER([KHR/khrplatform.h],
 
 # OS X defaults to having -Wint-conversion ("warn when passing
 # uintptr_t to a void *") by default.  Kill that.
-XORG_TESTSET_CFLAG(CWARNFLAGS, [-Wno-int-conversion])
+# XORG_TESTSET_CFLAG(CWARNFLAGS, [-Wno-int-conversion])
 
 AC_ARG_ENABLE([x11],
               [AC_HELP_STRING([--enable-x11=@<:@yes,no@:>@], [Enable X11 support @<:@default=yes@:>@])],
