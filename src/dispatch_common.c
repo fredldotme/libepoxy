@@ -195,6 +195,7 @@
 #define GLES1_LIB "libGLESv1_CM.so.1"
 #define GLES2_LIB "libGLESv2.so.2"
 #define OPENGL_LIB "libOpenGL.so.0"
+#define USE_HYBRIS 1
 #endif
 
 #ifdef __GNUC__
@@ -354,7 +355,9 @@ do_dlsym(void **handle, const char *name, bool exit_on_fail)
 bool
 epoxy_is_desktop_gl(void)
 {
-    const char *es_prefix = "OpenGL ES";
+    const char *es_prefix1 = "OpenGL ES";
+    // Satisfy the PowerVR usecase, see below
+    const char *es_prefix2 = "OpenGL_ES";
     const char *version;
 
 #if PLATFORM_HAS_EGL
@@ -388,7 +391,8 @@ epoxy_is_desktop_gl(void)
     if (!version)
         return true;
 
-    return strncmp(es_prefix, version, strlen(es_prefix));
+    return strncmp(es_prefix1, version, strlen(es_prefix1)) ||
+           strncmp(es_prefix2, version, strlen(es_prefix2));
 }
 
 static int
@@ -751,7 +755,7 @@ epoxy_get_core_proc_address(const char *name, int core_version)
 {
 #ifdef _WIN32
     int core_symbol_support = 11;
-#elif defined(__ANDROID__)
+#elif defined(__ANDROID__) || defined(USE_HYBRIS)
     /**
      * All symbols must be resolved through eglGetProcAddress
      * on Android
